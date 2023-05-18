@@ -1,5 +1,5 @@
 const server = require('./server.js')
-const procuradosControllers = require('./controllers/procuradosControllers');
+const procuradosController = require('./controllers/procuradosController');
 
 require('./swagger')(server);
 
@@ -13,7 +13,19 @@ require('./swagger')(server);
  *       200:
  *         description: Mensagem de sucesso
  */
-server.get('/procurados', procuradosControllers.getAllProcurados)
+server.get('/procurados', procuradosController.getAllProcurados)
+
+/**
+ * @swagger
+ * /procurados/:name:
+ *   get:
+ *     summary: Retorna todos os procurados
+ *     tags: [Procurados]
+ *     responses:
+ *       200:
+ *         description: Mensagem de sucesso
+ */
+ server.get('/procurados/:name', procuradosController.getProcuradoByNome)
 
 
 
