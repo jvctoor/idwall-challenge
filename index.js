@@ -1,28 +1,19 @@
-const db = require('./database.js')
 const server = require('./server.js')
+const procuradosControllers = require('./controllers/procuradosControllers');
 
 require('./swagger')(server);
 
 /**
  * @swagger
- * tags:
- *   name: Procurados
- */
-
-/**
- * @swagger
- * /usuarios:
+ * /procurados:
  *   get:
- *     summary: Retorna todos os usuários
- *     description: Retorna uma mensagem de exemplo
+ *     summary: Retorna todos os procurados
  *     tags: [Procurados]
  *     responses:
  *       200:
  *         description: Mensagem de sucesso
  */
-server.get('/usuarios', (req, res) => {
-    db.query("select * from usuario", (err, rows) => {
-        res.send(rows)
-    })
-})
+server.get('/procurados', procuradosControllers.getAllProcurados)
+
+
 
