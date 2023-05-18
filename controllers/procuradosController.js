@@ -8,20 +8,37 @@ const getAllProcurados = (req, res) => {
 }
 
 const getProcuradoByNome = (req, res) => {
-  const nomePesquisado = req.params.name;
-  db.query("SELECT p.ID, p.Nome, p.Genero, p.DataNascimento, p.LocalNascimento, JSON_ARRAYAGG(a.Acusacao) AS Acusacoes, SUM(a.severidade) AS SeveridadeTotal FROM Procurados p INNER JOIN Acusacoes a ON p.ID = a.ProcuradoID GROUP BY p.ID, p.Nome, p.Genero, p.DataNascimento, p.LocalNascimento ORDER BY SeveridadeTotal DESC;", (err, rows) => {
-    const resultadosFiltrados = rows.filter(procurado => procurado.Nome.includes(nomePesquisado));
-
-    resultadosFiltrados.forEach(procurado => {
-      const nomeCompleto = procurado.Nome;
-      const acertos = nomeCompleto.split(' ').filter(nome => nome.includes(nomePesquisado)).length;
-      const porcentagemAcerto = (acertos / nomeCompleto.split(' ').length) * 100;
-      procurado.PorcentagemAcerto = porcentagemAcerto;
+  const pesquisa = req.params.name;
+  const porcentagemMinima = req.params.precisao;
+  //console.log(pesquisa)
+  db.query("SELECT p.ID, p.Nome, p.Genero, p.DataNascimento, p.LocalNascimento, JSON_ARRAYAGG(a.Acusacao) AS Acusacoes, SUM(a.severidade) AS SeveridadeTotal FROM Procurados p INNER JOIN Acusacoes a ON p.ID = a.ProcuradoID GROUP BY p.ID, p.Nome, p.Genero, p.DataNascimento, p.LocalNascimento ORDER BY SeveridadeTotal DESC;", (err, resultados) => {
+    
+    const resultadosFiltrados = resultados.filter(procurado => {
+      const nomeCompleto = procurado.Nome.toLowerCase();
+      const nomesPesquisa = pesquisa.toLowerCase().split(' ');
+      return nomesPesquisa.some(nome => nomeCompleto.includes(nome));
     });
 
-    const resultadosFiltradosPorPorcentagem = resultadosFiltrados.filter(procurado => procurado.PorcentagemAcerto > 40);
+    resultadosFiltrados.forEach(procurado => {
+      const nomeCompleto = procurado.Nome.toLowerCase();
+      const nomesPesquisa = pesquisa.toLowerCase().split(' ');
+      const totalNomesPesquisa = nomesPesquisa.length;
+      let acertos = 0;
+    
+      nomesPesquisa.forEach(nome => {
+        if (nomeCompleto.includes(nome)) {
+          acertos++;
+        }
+      });
+    
+      const porcentagemAcerto = (acertos / totalNomesPesquisa) * 100;
+      procurado.PrecisãoBusca = porcentagemAcerto;
+    });
 
-    res.send(resultadosFiltradosPorPorcentagem);
+    const resultadosFiltradosPorPorcentagem = resultadosFiltrados.filter(procurado => procurado.PrecisãoBusca > porcentagemMinima);
+
+    res.send(resultadosFiltradosPorPorcentagem)
+
 
   })
 
