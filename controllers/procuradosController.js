@@ -32,10 +32,10 @@ const getProcuradoByNome = (req, res) => {
       });
     
       const porcentagemAcerto = (acertos / totalNomesPesquisa) * 100;
-      procurado.PrecisãoBusca = porcentagemAcerto;
+      procurado.PrecisaoBusca = porcentagemAcerto;
     });
 
-    const resultadosFiltradosPorPorcentagem = resultadosFiltrados.filter(procurado => procurado.PrecisãoBusca > porcentagemMinima);
+    const resultadosFiltradosPorPorcentagem = resultadosFiltrados.filter(procurado => procurado.PrecisaoBusca > porcentagemMinima);
 
     res.send(resultadosFiltradosPorPorcentagem)
 
