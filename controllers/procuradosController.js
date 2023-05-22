@@ -59,8 +59,24 @@ const getProcuradoByRG = (req, res) => {
   
 }
 
+const getProcuradoByCPF = (req, res) => {
+  const cpf = req.params.cpf;
+  
+  db.query("SELECT p.id, p.nome, p.genero, p.dataNascimento, p.localNascimento, p.rg, p.cpf, JSON_ARRAYAGG(a.descricao) AS acusacoes, SUM(a.severidade) AS severidadeTotal, JSON_ARRAYAGG(JSON_OBJECT('descricao', e.descricao, 'dataEvidencia', e.dataEvidencia, 'imagens', e.imagens)) AS evidencias FROM Procurado p LEFT JOIN Acusacao a ON p.id = a.procurado_id LEFT JOIN Evidencia e ON a.id = e.acusacao_id GROUP BY p.id, p.nome, p.genero, p.dataNascimento, p.localNascimento, p.rg, p.cpf ORDER BY severidadeTotal DESC;", (err, rows) => {
+    const usuarioEncontrado = rows.find(usuario => usuario.cpf === cpf);
+
+  if (usuarioEncontrado) {
+    res.json(usuarioEncontrado);
+  } else {
+    res.status(404).json({ error: 'Usuário não encontrado.' });
+  }
+  })
+  
+}
+
 module.exports = {
   getAllProcurados,
   getProcuradoByNome,
-  getProcuradoByRG
+  getProcuradoByRG,
+  getProcuradoByCPF
 };

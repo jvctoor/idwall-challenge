@@ -28,9 +28,9 @@ server.get('/procurados', procuradosController.getAllProcurados)
  *         required: true
  *         schema:
  *           type: string
- *       - name: precisao
+ *       - name: precisaoMinima
  *         in: path
- *         description: Precisão mínima
+ *         description: Precisão mínima que o nome precisa ter para ser retornado
  *         required: true
  *         schema:
  *           type: number
@@ -51,9 +51,10 @@ server.get('/procurados', procuradosController.getAllProcurados)
  *       - rg: rg
  *         in: path
  *         description: RG do procurado
- *         required: true
+ *         required: false
  *         schema:
- *           type: string
+ *           type: number
+ *           format: integer 
  *     responses:
  *       200:
  *         description: Mensagem de sucesso
@@ -61,3 +62,25 @@ server.get('/procurados', procuradosController.getAllProcurados)
  *         description: Não foi encontrado usuários com o RG solicitado
  */
  server.get('/procurados/rg/:rg', procuradosController.getProcuradoByRG)
+
+ /**
+ * @swagger
+ * /procurados/cpf/{cpf}:
+ *   get:
+ *     summary: Retorna o procurado por CPF
+ *     tags: [Procurados]
+ *     parameters:
+ *       - cpf: cpf
+ *         in: path
+ *         description: CPF do procurado
+ *         required: false
+ *         schema:
+ *           type: number
+ *           format: integer 
+ *     responses:
+ *       200:
+ *         description: Mensagem de sucesso
+ *       404:
+ *         description: Não foi encontrado usuários com o RG solicitado
+ */
+  server.get('/procurados/cpf/:cpf', procuradosController.getProcuradoByCPF)
