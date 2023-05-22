@@ -17,7 +17,7 @@ server.get('/procurados', procuradosController.getAllProcurados)
 
 /**
  * @swagger
- * /procurados/{nome}/precisaoMinima/{precisao}:
+ * /procurados/nome/{nome}/precisaoMinima/{precisao}:
  *   get:
  *     summary: Retorna os procurados por nome
  *     tags: [Procurados]
@@ -39,7 +39,25 @@ server.get('/procurados', procuradosController.getAllProcurados)
  *       200:
  *         description: Mensagem de sucesso
  */
- server.get('/procurados/:name/precisaoMinima/:precisao', procuradosController.getProcuradoByNome)
+ server.get('/procurados/nome/:name/precisaoMinima/:precisao', procuradosController.getProcuradoByNome)
 
-
-
+/**
+ * @swagger
+ * /procurados/rg/{rg}:
+ *   get:
+ *     summary: Retorna o procurado por RG
+ *     tags: [Procurados]
+ *     parameters:
+ *       - rg: rg
+ *         in: path
+ *         description: RG do procurado
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Mensagem de sucesso
+ *       404:
+ *         description: Não foi encontrado usuários com o RG solicitado
+ */
+ server.get('/procurados/rg/:rg', procuradosController.getProcuradoByRG)
